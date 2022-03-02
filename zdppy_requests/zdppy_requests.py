@@ -17,6 +17,8 @@ class Requests:
                  host: str = "127.0.0.1",
                  port: int = 8888,
                  root_path: str = "",
+                 username: str = None,  # 用户名
+                 password: str = None,  # 密码
                  prefix: str = "http",
                  log_file_path: str = "logs/zdppy/zdppy_requests.log",
                  debug: bool = False):
@@ -24,6 +26,15 @@ class Requests:
         self.port = port
         self.root_path = root_path
         self.prefix = prefix
+
+        # 权限
+        self.username = username
+        self.password = password
+        self.auth = None
+        if self.username is not None and self.password is not None:
+            self.auth = (username, password)
+
+        # 基础路径
         self.url = f"{prefix}://{host}:{port}/{root_path}"
         if self.url.endswith("/"):  # 去除尾部空格
             self.url = self.url[:-1]
@@ -32,6 +43,26 @@ class Requests:
         self.log_file_path = log_file_path
         self.debug = debug
         self.log = Log(log_file_path=log_file_path, debug=debug)
+
+    def get(self, path: str):
+        """
+        发送GET请求
+        :param path:
+        :return:
+        """
+        url = f"{self.url}/{path}/"
+        response = requests.get(url, auth=self.auth)
+        return response
+
+    def post(self, path: str, data: Dict):
+        """
+        发送post请求
+        :return:
+        """
+        url = f"{self.url}/{path}/"
+        self.log.info(f"正在发送POST请求：{url}")
+        response = requests.post(url, auth=self.auth, json=data)
+        return response
 
     def add(self, table: str, data: Dict, status_code: int = 200):
         """
