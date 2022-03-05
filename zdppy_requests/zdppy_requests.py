@@ -6,7 +6,7 @@
 # @File    : zdppy_requests.py
 # @Software: PyCharm
 from typing import Dict
-import requests
+from .libs import requests
 from zdppy_log import Log
 from .exceptions import StatusCodeError, ParamError
 
@@ -50,7 +50,7 @@ class Requests:
         :param path:
         :return:
         """
-        url = f"{self.url}/{path}/"
+        url = self.__get_url(path)
         response = requests.get(url, auth=self.auth)
         return response
 
@@ -59,10 +59,51 @@ class Requests:
         发送post请求
         :return:
         """
-        url = f"{self.url}/{path}/"
+        url = self.__get_url(path)
         self.log.info(f"正在发送POST请求：{url}")
         response = requests.post(url, auth=self.auth, json=data)
         return response
+
+    def put(self, path: str, data: Dict):
+        """
+        发送put请求
+        :return:
+        """
+        url = self.__get_url(path)
+        self.log.info(f"正在发送PUT请求：{url}")
+        response = requests.put(url, auth=self.auth, json=data)
+        return response
+
+    def delete(self, path: str, data: Dict):
+        """
+        发送DELETE请求
+        :return:
+        """
+        url = self.__get_url(path)
+        self.log.info(f"正在发送DELETE请求：{url}")
+        response = requests.delete(url, auth=self.auth, json=data)
+        return response
+
+    def patch(self, path: str, data: Dict):
+        """
+        发送PATCH请求
+        :return:
+        """
+        url = self.__get_url(path)
+        self.log.info(f"正在发送PATCH请求：{url}")
+        response = requests.patch(url, auth=self.auth, json=data)
+        return response
+
+    def __get_url(self, path):
+        """
+        根据path获取请求的URL路径
+        :param path: 路径
+        :return: url字符串
+        """
+        if path.endswith("/"):
+            path = path[:-1]
+        url = f"{self.url}/{path}/"
+        return url
 
     def add(self, table: str, data: Dict, status_code: int = 200):
         """
