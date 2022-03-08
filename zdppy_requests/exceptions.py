@@ -14,3 +14,8 @@ class StatusCodeError(Exception):
 class ParamError(Exception):
     def __init__(self, *args):
         super(ParamError, self).__init__(*args)
+
+
+class EmptyError(Exception):
+    def __init__(self, *args):
+        super(EmptyError, self).__init__(*args)

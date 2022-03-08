@@ -5,10 +5,10 @@
 # @Site    : 
 # @File    : zdppy_requests.py
 # @Software: PyCharm
-from typing import Dict
+from typing import Dict, List, Union
 from .libs import requests
 from zdppy_log import Log
-from .exceptions import StatusCodeError, ParamError
+from .exceptions import StatusCodeError, ParamError, EmptyError
 
 
 class Requests:
@@ -40,31 +40,37 @@ class Requests:
             self.url = self.url[:-1]
 
         # 初始化日志
-        self.log_file_path = log_file_path
+        self.__log_file_path = log_file_path
         self.debug = debug
         self.log = Log(log_file_path=log_file_path, debug=debug)
 
-    def get(self, path: str):
+    def get(self, path: str, query: Dict = None):
         """
         发送GET请求
         :param path:
+        :param query: 查询参数
         :return:
         """
         url = self.__get_url(path)
-        response = requests.get(url, auth=self.auth)
+        self.log.info(f"正在发送GET请求：{url}")
+        response = requests.get(url, auth=self.auth, params=query)
         return response
 
-    def post(self, path: str, data: Dict):
+    def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None):
         """
         发送post请求
+        :param path 请求路径
+        :param query query查询参数
+        :param form form表单参数
+        :param json json请求体参数
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送POST请求：{url}")
-        response = requests.post(url, auth=self.auth, json=data)
+        response = requests.post(url, auth=self.auth, params=query, data=form, json=json)
         return response
 
-    def put(self, path: str, data: Dict):
+    def put(self, path: str, data: Dict = None):
         """
         发送put请求
         :return:
@@ -74,7 +80,7 @@ class Requests:
         response = requests.put(url, auth=self.auth, json=data)
         return response
 
-    def delete(self, path: str, data: Dict):
+    def delete(self, path: str, data: Dict = None):
         """
         发送DELETE请求
         :return:
@@ -84,7 +90,7 @@ class Requests:
         response = requests.delete(url, auth=self.auth, json=data)
         return response
 
-    def patch(self, path: str, data: Dict):
+    def patch(self, path: str, data: Dict = None):
         """
         发送PATCH请求
         :return:
@@ -100,9 +106,11 @@ class Requests:
         :param path: 路径
         :return: url字符串
         """
+        if path.startswith("/"):
+            path = path[1:]
         if path.endswith("/"):
             path = path[:-1]
-        url = f"{self.url}/{path}/"
+        url = f"{self.url}/{path}"
         return url
 
     def add(self, table: str, data: Dict, status_code: int = 200):
@@ -184,3 +192,36 @@ class Requests:
 
         # 返回数据
         return response.json()
+
+    def upload(self, path: str, upload_name: str, file_name: Union[str, List] = None):
+        """
+        上传文件
+        :param path 上传的路径
+        :param upload_name 上传的名字
+        :param file_name 文件的名字，可以是一个字符串，也可以是一个列表
+        """
+        # 准备url
+        url = self.__get_url(path)
+        self.log.info(f"正在发送POST请求：{url}")
+
+        # 准备文件
+        files = {}
+
+        # 单文件上传
+        if isinstance(file_name, str):
+            files[upload_name] = open(file_name, "rb")
+
+        # 多文件上传
+        elif isinstance(file_name, list):
+            files = []
+            for file in file_name:
+                files.append((upload_name, (file, open(file, "rb"))))
+            self.log.info(f"要上传的文件：{files}")
+        else:
+            raise EmptyError("要上传的文件不能为空")
+
+        # 上传文件
+        response = requests.post(url, files=files, verify=False)
+
+        # 返回结果
+        return response
