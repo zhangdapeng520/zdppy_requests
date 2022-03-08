@@ -44,7 +44,7 @@ class Requests:
         self.debug = debug
         self.log = Log(log_file_path=log_file_path, debug=debug)
 
-    def get(self, path: str, query: Dict = None):
+    def get(self, path: str, query: Dict = None, headers: Dict = None):
         """
         发送GET请求
         :param path:
@@ -53,51 +53,52 @@ class Requests:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送GET请求：{url}")
-        response = requests.get(url, auth=self.auth, params=query)
+        response = requests.get(url, auth=self.auth, params=query, headers=headers)
         return response
 
-    def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None):
+    def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
         """
         发送post请求
         :param path 请求路径
         :param query query查询参数
         :param form form表单参数
         :param json json请求体参数
+        :param headers 请求头
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送POST请求：{url}")
-        response = requests.post(url, auth=self.auth, params=query, data=form, json=json)
+        response = requests.post(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
         return response
 
-    def put(self, path: str, data: Dict = None):
+    def put(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
         """
         发送put请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送PUT请求：{url}")
-        response = requests.put(url, auth=self.auth, json=data)
+        response = requests.put(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
         return response
 
-    def delete(self, path: str, data: Dict = None):
+    def delete(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
         """
         发送DELETE请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送DELETE请求：{url}")
-        response = requests.delete(url, auth=self.auth, json=data)
+        response = requests.delete(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
         return response
 
-    def patch(self, path: str, data: Dict = None):
+    def patch(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
         """
         发送PATCH请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送PATCH请求：{url}")
-        response = requests.patch(url, auth=self.auth, json=data)
+        response = requests.patch(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
         return response
 
     def __get_url(self, path):
