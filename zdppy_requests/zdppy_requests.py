@@ -44,19 +44,35 @@ class Requests:
         self.debug = debug
         self.log = Log(log_file_path=log_file_path, debug=debug)
 
-    def get(self, path: str, query: Dict = None, headers: Dict = None):
+    def get(self, path: str, query: Dict = None,
+            headers: Dict = None,
+            basic_auth: Dict = None,
+            cookies=None):
         """
         发送GET请求
         :param path:
         :param query: 查询参数
+        :param headers: 请求头
+        :param cookies: cookie
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送GET请求：{url}")
-        response = requests.get(url, auth=self.auth, params=query, headers=headers)
+
+        # 处理cookie
+        if cookies is not None:
+            cookies = requests.utils.dict_from_cookiejar(cookies)
+
+        # 处理auth
+        if basic_auth is not None:
+            self.auth = (basic_auth.get("username"), basic_auth.get("password"))
+
+        # 发送请求
+        response = requests.get(url, auth=self.auth, params=query, headers=headers, cookies=cookies)
         return response
 
-    def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
+    def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None,
+             cookies=None):
         """
         发送post请求
         :param path 请求路径
@@ -64,41 +80,73 @@ class Requests:
         :param form form表单参数
         :param json json请求体参数
         :param headers 请求头
+        :param cookies cookies数据
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送POST请求：{url}")
-        response = requests.post(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
+
+        # 处理cookie
+        if cookies is not None:
+            cookies = requests.utils.dict_from_cookiejar(cookies)
+
+        # 发送请求，获取响应
+        response = requests.post(url, auth=self.auth, params=query, data=form,
+                                 json=json, headers=headers, cookies=cookies)
         return response
 
-    def put(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
+    def put(self, path: str, query: Dict = None, form: Dict = None,
+            json: Dict = None, headers: Dict = None, cookies=None):
         """
         发送put请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送PUT请求：{url}")
-        response = requests.put(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
+
+        # 处理cookie
+        if cookies is not None:
+            cookies = requests.utils.dict_from_cookiejar(cookies)
+
+        # 发送请求，获取响应
+        response = requests.put(url, auth=self.auth, params=query, data=form,
+                                json=json, headers=headers, cookies=cookies)
         return response
 
-    def delete(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
+    def delete(self, path: str, query: Dict = None, form: Dict = None,
+               json: Dict = None, headers: Dict = None, cookies=None):
         """
         发送DELETE请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送DELETE请求：{url}")
-        response = requests.delete(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
+
+        # 处理cookie
+        if cookies is not None:
+            cookies = requests.utils.dict_from_cookiejar(cookies)
+
+        # 发送请求，获取响应
+        response = requests.delete(url, auth=self.auth, params=query, data=form,
+                                   json=json, headers=headers, cookies=cookies)
         return response
 
-    def patch(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None):
+    def patch(self, path: str, query: Dict = None, form: Dict = None,
+              json: Dict = None, headers: Dict = None, cookies=None):
         """
         发送PATCH请求
         :return:
         """
         url = self.__get_url(path)
         self.log.info(f"正在发送PATCH请求：{url}")
-        response = requests.patch(url, auth=self.auth, params=query, data=form, json=json, headers=headers)
+
+        # 处理cookie
+        if cookies is not None:
+            cookies = requests.utils.dict_from_cookiejar(cookies)
+
+        # 发送请求，获取响应
+        response = requests.patch(url, auth=self.auth, params=query, data=form,
+                                  json=json, headers=headers, cookies=cookies)
         return response
 
     def __get_url(self, path):
