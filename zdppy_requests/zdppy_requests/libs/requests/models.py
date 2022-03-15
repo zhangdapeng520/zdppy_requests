@@ -40,16 +40,16 @@ from .utils import (
 from .compat import (
     Callable, Mapping,
     cookielib, urlunparse, urlsplit, urlencode, str, bytes,
-    is_py2, chardet, builtin_str, basestring, JSONDecodeError)
+    chardet, builtin_str, basestring, JSONDecodeError)
 from .compat import json as complexjson
 from .status_codes import codes
 
 #: The set of HTTP status codes that indicate an automatically
 #: processable redirect.
 REDIRECT_STATI = (
-    codes.moved,               # 301
-    codes.found,               # 302
-    codes.other,               # 303
+    codes.moved,  # 301
+    codes.found,  # 302
+    codes.other,  # 303
     codes.temporary_redirect,  # 307
     codes.permanent_redirect,  # 308
 )
@@ -226,9 +226,8 @@ class Request(RequestHooksMixin):
     """
 
     def __init__(self,
-            method=None, url=None, headers=None, files=None, data=None,
-            params=None, auth=None, cookies=None, hooks=None, json=None):
-
+                 method=None, url=None, headers=None, files=None, data=None,
+                 params=None, auth=None, cookies=None, hooks=None, json=None):
         # Default empty dicts for dict params.
         data = [] if data is None else data
         files = [] if files is None else files
@@ -310,8 +309,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         self._body_position = None
 
     def prepare(self,
-            method=None, url=None, headers=None, files=None, data=None,
-            params=None, auth=None, cookies=None, hooks=None, json=None):
+                method=None, url=None, headers=None, files=None, data=None,
+                params=None, auth=None, cookies=None, hooks=None, json=None):
         """Prepares the entire request with the given parameters."""
 
         self.prepare_method(method)
@@ -367,7 +366,7 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         if isinstance(url, bytes):
             url = url.decode('utf8')
         else:
-            url = unicode(url) if is_py2 else str(url)
+            url = str(url)
 
         # Remove leading whitespaces from url
         url = url.lstrip()
@@ -417,18 +416,6 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         # Bare domains aren't valid URLs.
         if not path:
             path = '/'
-
-        if is_py2:
-            if isinstance(scheme, str):
-                scheme = scheme.encode('utf-8')
-            if isinstance(netloc, str):
-                netloc = netloc.encode('utf-8')
-            if isinstance(path, str):
-                path = path.encode('utf-8')
-            if isinstance(query, str):
-                query = query.encode('utf-8')
-            if isinstance(fragment, str):
-                fragment = fragment.encode('utf-8')
 
         if isinstance(params, (str, bytes)):
             params = to_native_string(params)
@@ -911,7 +898,7 @@ class Response(object):
         except JSONDecodeError as e:
             # Catch JSON-related errors and raise as requests.JSONDecodeError
             # This aliases json.JSONDecodeError and simplejson.JSONDecodeError
-            if is_py2: # e is a ValueError
+            if is_py2:  # e is a ValueError
                 raise RequestsJSONDecodeError(e.message)
             else:
                 raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)

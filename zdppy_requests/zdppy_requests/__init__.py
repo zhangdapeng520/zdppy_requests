@@ -7,3 +7,4 @@
 # @Software: PyCharm
 from .zdppy_requests import Requests
 from .cookie import Cookie
+from .libs import requests
