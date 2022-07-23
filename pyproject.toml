@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zdppy_requests"
-version = "0.1.1"
+version = "0.1.2"
 description = "发送HTTP请求的库"
 authors = ["zhangdapeng <pygosuperman@outlook.com>"]
 

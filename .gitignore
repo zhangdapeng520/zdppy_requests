@@ -1,2 +1,4 @@
 .idea
 *.jpg
+dist
+__pychache__
