@@ -1,0 +1,7 @@
+import zdppy_requests
+
+response = zdppy_requests.get('https://www.baidu.com')
+print(response.cookies)
+for key, value in response.cookies.items():
+    print(key, '=====', value)
+print(response.cookies)

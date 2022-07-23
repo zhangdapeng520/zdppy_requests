@@ -13,6 +13,8 @@ import sys
 # Import encoding now, to avoid implicit import later.
 # Implicit import within threads may cause LookupError when standard library is in a ZIP,
 # such as in Embedded Python. See https://github.com/psf/requests/issues/3578.
+from typing import Union, List
+
 import encodings.idna
 
 from .libs.urllib3.fields import RequestField
@@ -576,10 +578,10 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
 
 
 class Response(object):
-    """The :class:`Response <Response>` object, which contains a
-    server's response to an HTTP request.
     """
-
+    响应类
+    """
+    # 属性列表
     __attrs__ = [
         '_content', 'status_code', 'headers', 'url', 'history',
         'encoding', 'reason', 'cookies', 'elapsed', 'request'
@@ -589,48 +591,16 @@ class Response(object):
         self._content = False
         self._content_consumed = False
         self._next = None
-
-        #: Integer Code of responded HTTP Status, e.g. 404 or 200.
-        self.status_code = None
-
-        #: Case-insensitive Dictionary of Response Headers.
-        #: For example, ``headers['content-encoding']`` will return the
-        #: value of a ``'Content-Encoding'`` response header.
-        self.headers = CaseInsensitiveDict()
-
-        #: File-like object representation of response (for advanced usage).
-        #: Use of ``raw`` requires that ``stream=True`` be set on the request.
-        #: This requirement does not apply for use internally to Requests.
-        self.raw = None
-
-        #: Final URL location of Response.
-        self.url = None
-
-        #: Encoding to decode with when accessing r.text.
-        self.encoding = None
-
-        #: A list of :class:`Response <Response>` objects from
-        #: the history of the Request. Any redirect responses will end
-        #: up here. The list is sorted from the oldest to the most recent request.
-        self.history = []
-
-        #: Textual reason of responded HTTP Status, e.g. "Not Found" or "OK".
-        self.reason = None
-
-        #: A CookieJar of Cookies the server sent back.
-        self.cookies = cookiejar_from_dict({})
-
-        #: The amount of time elapsed between sending the request
-        #: and the arrival of the response (as a timedelta).
-        #: This property specifically measures the time taken between sending
-        #: the first byte of the request and finishing parsing the headers. It
-        #: is therefore unaffected by consuming the response content or the
-        #: value of the ``stream`` keyword argument.
-        self.elapsed = datetime.timedelta(0)
-
-        #: The :class:`PreparedRequest <PreparedRequest>` object to which this
-        #: is a response.
-        self.request = None
+        self.status_code: int = 0  # 响应状态码
+        self.headers = CaseInsensitiveDict()  # 请求头
+        self.raw: str = ""  # 纯文本内容
+        self.url: str = ""  # 最终的URL
+        self.encoding: str = "UTF-8"  # 编码格式
+        self.history: List[Response] = []  # 请求历史
+        self.reason: str = ""  # 响应描述，比如Ok，Not Found
+        self.cookies = cookiejar_from_dict({})  # cookie字典
+        self.elapsed = datetime.timedelta(0)  # 请求消耗的世界
+        self.request: Union[PreparedRequest, None] = None  # 请求对象
 
     def __enter__(self):
         return self
@@ -639,8 +609,6 @@ class Response(object):
         self.close()
 
     def __getstate__(self):
-        # Consume everything; accessing the content attribute makes
-        # sure the content has been fully read.
         if not self._content_consumed:
             self.content
 
