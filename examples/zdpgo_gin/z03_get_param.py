@@ -6,4 +6,4 @@ query = {
     "first_name": "大鹏",
     "last_name": "张"
 }
-r.log.info(r.get("/welcome", query=query).text)  # 自动解码
+print(r.get("/welcome", query=query).text)  # 自动解码

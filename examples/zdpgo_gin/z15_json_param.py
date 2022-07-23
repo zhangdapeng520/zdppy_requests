@@ -6,5 +6,5 @@ json_data = {
     "name": "张大鹏",
     "age": 22,
 }
-r.log.info(r.post("/", json=json_data).json())
-r.log.info(r.put("/", json=json_data).json())
+print(r.post("/", json=json_data).json())
+print(r.put("/", json=json_data).json())

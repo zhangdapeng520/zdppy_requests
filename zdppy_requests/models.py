@@ -15,10 +15,10 @@ import sys
 # such as in Embedded Python. See https://github.com/psf/requests/issues/3578.
 import encodings.idna
 
-from ..urllib3.fields import RequestField
-from ..urllib3.filepost import encode_multipart_formdata
-from ..urllib3.util import parse_url
-from ..urllib3.exceptions import (
+from .libs.urllib3.fields import RequestField
+from .libs.urllib3.filepost import encode_multipart_formdata
+from .libs.urllib3.util import parse_url
+from .libs.urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError, LocationParseError)
 
 from io import UnsupportedOperation
@@ -898,10 +898,7 @@ class Response(object):
         except JSONDecodeError as e:
             # Catch JSON-related errors and raise as requests.JSONDecodeError
             # This aliases json.JSONDecodeError and simplejson.JSONDecodeError
-            if is_py2:  # e is a ValueError
-                raise RequestsJSONDecodeError(e.message)
-            else:
-                raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+            raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
 
     @property
     def links(self):

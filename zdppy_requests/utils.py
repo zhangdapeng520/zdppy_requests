@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-requests.utils
-~~~~~~~~~~~~~~
-
-This module provides utility functions that are used within Requests
-that are also useful for external consumption.
-"""
-
 import codecs
 import contextlib
 import io
@@ -20,8 +10,8 @@ import tempfile
 import warnings
 import zipfile
 from collections import OrderedDict
-from ..urllib3.util import make_headers
-from ..urllib3.util import parse_url
+from .libs.urllib3.util import make_headers
+from .libs.urllib3.util import parse_url
 
 from .__version__ import __version__
 from . import certs

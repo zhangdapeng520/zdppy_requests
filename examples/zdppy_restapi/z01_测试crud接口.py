@@ -15,19 +15,19 @@ if __name__ == '__main__':
     data = {
         "id": 15,
     }
-    r.log.info(r.put("school", data).status_code)
-    r.log.info(r.put("school", data).json())
+    print(r.put("school", data).status_code)
+    print(r.put("school", data).json())
     data = {
         "ids": [15, 16, 17],
     }
-    r.log.info(r.put("school", data).status_code)
-    r.log.info(r.put("school", data).json())
+    print(r.put("school", data).status_code)
+    print(r.put("school", data).json())
     data = {
         "page": 1,
         "size": 10,
     }
-    r.log.info(r.put("school", data).status_code)
-    r.log.info(r.put("school", data).json())
+    print(r.put("school", data).status_code)
+    print(r.put("school", data).json())
     print("--------------------------------")
 
     # 处理新增
@@ -35,12 +35,12 @@ if __name__ == '__main__':
         "columns": ["name"],
         "values": ["北京大学111"]
     }
-    r.log.info(r.post("school", data).json())
+    print(r.post("school", data).json())
     data = {
         "columns": ["name"],
         "values": [["北京大学111"], ["北京大学222"], ["北京大学333"]]
     }
-    r.log.info(r.post("school", data).json())
+    print(r.post("school", data).json())
     print("--------------------------------")
 
     # 处理修改
@@ -49,25 +49,25 @@ if __name__ == '__main__':
         "columns": ["name"],
         "values": ["修改北京大学。。。"]
     }
-    r.log.info(r.patch("school", data).json())
-    r.log.info(r.put("school", data={"id": 20}).json())
+    print(r.patch("school", data).json())
+    print(r.put("school", data={"id": 20}).json())
 
     data = {
         "ids": [20, 21, 22],
         "columns": ["name"],
         "values": ["修改北京大学111。。。"]
     }
-    r.log.info(r.patch("school", data).json())
-    r.log.info(r.put("school", data={"ids": [20, 21, 22]}).json())
+    print(r.patch("school", data).json())
+    print(r.put("school", data={"ids": [20, 21, 22]}).json())
     print("--------------------------------")
 
     # 处理删除
     data = {
         "id": 15
     }
-    r.log.info(r.delete("school", data).json())
+    print(r.delete("school", data).json())
     data = {
         "ids": [15, 16, 17]
     }
-    r.log.info(r.delete("school", data).json())
+    print(r.delete("school", data).json())
     print("--------------------------------")

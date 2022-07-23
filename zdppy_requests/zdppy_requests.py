@@ -6,9 +6,8 @@
 # @File    : zdppy_requests.py
 # @Software: PyCharm
 from typing import Dict, List, Union
-from .libs import requests
-from zdppy_log import Log
-from .exceptions import StatusCodeError, ParamError, EmptyError
+import zdppy_requests
+from .exceptions1 import StatusCodeError, ParamError, EmptyError
 
 
 class Requests:
@@ -42,7 +41,6 @@ class Requests:
         # 初始化日志
         self.__log_file_path = log_file_path
         self.debug = debug
-        self.log = Log(log_file_path=log_file_path, debug=debug)
 
     def get(self, path: str, query: Dict = None,
             headers: Dict = None,
@@ -57,18 +55,17 @@ class Requests:
         :return:
         """
         url = self.__get_url(path)
-        self.log.info(f"正在发送GET请求：{url}")
 
         # 处理cookie
         if cookies is not None:
-            cookies = requests.utils.dict_from_cookiejar(cookies)
+            cookies = zdppy_requests.utils.dict_from_cookiejar(cookies)
 
         # 处理auth
         if basic_auth is not None:
             self.auth = (basic_auth.get("username"), basic_auth.get("password"))
 
         # 发送请求
-        response = requests.get(url, auth=self.auth, params=query, headers=headers, cookies=cookies)
+        response = zdppy_requests.get(url, auth=self.auth, params=query, headers=headers, cookies=cookies)
         return response
 
     def post(self, path: str, query: Dict = None, form: Dict = None, json: Dict = None, headers: Dict = None,
@@ -84,14 +81,13 @@ class Requests:
         :return:
         """
         url = self.__get_url(path)
-        self.log.info(f"正在发送POST请求：{url}")
 
         # 处理cookie
         if cookies is not None:
-            cookies = requests.utils.dict_from_cookiejar(cookies)
+            cookies = zdppy_requests.utils.dict_from_cookiejar(cookies)
 
         # 发送请求，获取响应
-        response = requests.post(url, auth=self.auth, params=query, data=form,
+        response = zdppy_requests.post(url, auth=self.auth, params=query, data=form,
                                  json=json, headers=headers, cookies=cookies)
         return response
 
@@ -102,14 +98,13 @@ class Requests:
         :return:
         """
         url = self.__get_url(path)
-        self.log.info(f"正在发送PUT请求：{url}")
 
         # 处理cookie
         if cookies is not None:
-            cookies = requests.utils.dict_from_cookiejar(cookies)
+            cookies = zdppy_requests.utils.dict_from_cookiejar(cookies)
 
         # 发送请求，获取响应
-        response = requests.put(url, auth=self.auth, params=query, data=form,
+        response = zdppy_requests.put(url, auth=self.auth, params=query, data=form,
                                 json=json, headers=headers, cookies=cookies)
         return response
 
@@ -120,14 +115,13 @@ class Requests:
         :return:
         """
         url = self.__get_url(path)
-        self.log.info(f"正在发送DELETE请求：{url}")
 
         # 处理cookie
         if cookies is not None:
-            cookies = requests.utils.dict_from_cookiejar(cookies)
+            cookies = zdppy_requests.utils.dict_from_cookiejar(cookies)
 
         # 发送请求，获取响应
-        response = requests.delete(url, auth=self.auth, params=query, data=form,
+        response = zdppy_requests.delete(url, auth=self.auth, params=query, data=form,
                                    json=json, headers=headers, cookies=cookies)
         return response
 
@@ -138,14 +132,13 @@ class Requests:
         :return:
         """
         url = self.__get_url(path)
-        self.log.info(f"正在发送PATCH请求：{url}")
 
         # 处理cookie
         if cookies is not None:
-            cookies = requests.utils.dict_from_cookiejar(cookies)
+            cookies = zdppy_requests.utils.dict_from_cookiejar(cookies)
 
         # 发送请求，获取响应
-        response = requests.patch(url, auth=self.auth, params=query, data=form,
+        response = zdppy_requests.patch(url, auth=self.auth, params=query, data=form,
                                   json=json, headers=headers, cookies=cookies)
         return response
 
@@ -168,7 +161,7 @@ class Requests:
         :return:
         """
         url = f"{self.url}/{table}"
-        response = requests.post(url, json=data)
+        response = zdppy_requests.post(url, json=data)
 
         # 校验状态码
         if response.status_code != status_code:
@@ -183,7 +176,7 @@ class Requests:
         :return:
         """
         url = f"{self.url}/{table}"
-        response = requests.get(url, data={"offset": offset, "size": size})
+        response = zdppy_requests.get(url, data={"offset": offset, "size": size})
 
         # 校验状态码
         if response.status_code != status_code:
@@ -198,7 +191,7 @@ class Requests:
         :return:
         """
         url = f"{self.url}/{table}/{id}"
-        response = requests.get(url)
+        response = zdppy_requests.get(url)
 
         # 校验状态码
         if response.status_code != status_code:
@@ -213,7 +206,7 @@ class Requests:
         :return:
         """
         url = f"{self.url}/{table}/{id}"
-        response = requests.delete(url)
+        response = zdppy_requests.delete(url)
 
         # 校验状态码
         if response.status_code != status_code:
@@ -233,7 +226,7 @@ class Requests:
 
         # 准备url
         url = f"{self.url}/{table}/{id}"
-        response = requests.patch(url, json=data)
+        response = zdppy_requests.patch(url, json=data)
 
         # 校验状态码
         if response.status_code != status_code:
@@ -251,7 +244,6 @@ class Requests:
         """
         # 准备url
         url = self.__get_url(path)
-        self.log.info(f"正在发送POST请求：{url}")
 
         # 准备文件
         files = {}
@@ -265,12 +257,11 @@ class Requests:
             files = []
             for file in file_name:
                 files.append((upload_name, (file, open(file, "rb"))))
-            self.log.info(f"要上传的文件：{files}")
         else:
             raise EmptyError("要上传的文件不能为空")
 
         # 上传文件
-        response = requests.post(url, files=files, verify=False)
+        response = zdppy_requests.post(url, files=files, verify=False)
 
         # 返回结果
         return response

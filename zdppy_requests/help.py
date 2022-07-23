@@ -6,13 +6,13 @@ import platform
 import sys
 import ssl
 
-import idna
-import urllib3
+from .libs import idna
+from .libs import urllib3
 
 from . import __version__ as requests_version
 
 try:
-    import charset_normalizer
+    from .libs import charset_normalizer
 except ImportError:
     charset_normalizer = None
 
@@ -22,7 +22,7 @@ except ImportError:
     chardet = None
 
 try:
-    from urllib3.contrib import pyopenssl
+    from .libs.urllib3.contrib import pyopenssl
 except ImportError:
     pyopenssl = None
     OpenSSL = None

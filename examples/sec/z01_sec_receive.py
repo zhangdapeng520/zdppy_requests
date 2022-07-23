@@ -15,26 +15,23 @@ def test_request():
     """
     测试请求
     """
-    # 成功
-    r.log.info(r.post("/api/v1/sec", json=json_data, headers=headers).json())
-
     # 成功：任意路径
-    r.log.info(r.post("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
-    r.log.info(r.post("/", json=json_data, headers=headers).json())
-    r.log.info(r.post("", json=json_data, headers=headers).json())
+    print(r.post("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
+    print(r.post("/", json=json_data, headers=headers).json())
+    print(r.post("", json=json_data, headers=headers).json())
 
     # 成功：方法
-    r.log.info(r.get("/a/b/c/d/e/f/g", headers=headers).json())
-    r.log.info(r.put("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
-    r.log.info(r.delete("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
-    r.log.info(r.patch("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
+    print(r.get("/a/b/c/d/e/f/g", headers=headers).json())
+    print(r.put("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
+    print(r.delete("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
+    print(r.patch("/a/b/c/d/e/f/g", json=json_data, headers=headers).json())
 
     # 失败：sec为空
-    r.log.info(r.post("/api/v1/sec", json=json_data).json())
-    r.log.info(r.post("/api/v1/sec").json())
+    print(r.post("/api/v1/sec", json=json_data).json())
+    print(r.post("/api/v1/sec").json())
 
     # 失败：payload为空
-    r.log.info(r.post("/api/v1/sec", headers=headers).json())
+    print(r.post("/api/v1/sec", headers=headers).json())
 
 
 def test_thread(num):
@@ -44,7 +41,7 @@ def test_thread(num):
     start_time = time.time()
     for i in range(num):
         # 成功
-        r.log.info(r.post("/api/v1/sec", json=json_data, headers=headers).json())
+        print(r.post("/api/v1/sec", json=json_data, headers=headers).json())
     print(time.time() - start_time)
 
 

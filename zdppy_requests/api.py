@@ -61,15 +61,13 @@ def request(method, url, **kwargs):
         return session.request(method=method, url=url, **kwargs)
 
 
-def get(url, params=None, **kwargs):
-    r"""Sends a GET request.
+def get(url: str, params: dict = None, **kwargs):
+    r"""
+    发送GET请求
 
-    :param url: URL for the new :class:`Request` object.
-    :param params: (optional) Dictionary, list of tuples or bytes to send
-        in the query string for the :class:`Request`.
-    :param \*\*kwargs: Optional arguments that ``request`` takes.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
+    :param url: 请求的URL地址
+    :param params: 请求参数
+    :return: 响应对象
     """
 
     return request('get', url, params=params, **kwargs)

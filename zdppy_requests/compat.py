@@ -11,7 +11,7 @@ Python 3.
 try:
     import chardet
 except ImportError:
-    from .. import charset_normalizer as chardet
+    from .libs import charset_normalizer as chardet
 
 import sys
 
