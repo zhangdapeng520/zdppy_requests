@@ -14,44 +14,23 @@ from . import sessions
 
 
 def request(method, url, **kwargs):
-    """Constructs and sends a :class:`Request <Request>`.
-
-    :param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, ``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
-    :param url: URL for the new :class:`Request` object.
-    :param params: (optional) Dictionary, list of tuples or bytes to send
-        in the query string for the :class:`Request`.
-    :param data: (optional) Dictionary, list of tuples, bytes, or file-like
-        object to send in the body of the :class:`Request`.
-    :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
-    :param headers: (optional) Dictionary of HTTP Headers to send with the :class:`Request`.
-    :param cookies: (optional) Dict or CookieJar object to send with the :class:`Request`.
-    :param files: (optional) Dictionary of ``'name': file-like-objects`` (or ``{'name': file-tuple}``) for multipart encoding upload.
-        ``file-tuple`` can be a 2-tuple ``('filename', fileobj)``, 3-tuple ``('filename', fileobj, 'content_type')``
-        or a 4-tuple ``('filename', fileobj, 'content_type', custom_headers)``, where ``'content-type'`` is a string
-        defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers
-        to add for the file.
-    :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
-    :param timeout: (optional) How many seconds to wait for the server to send data
-        before giving up, as a float, or a :ref:`(connect timeout, read
-        timeout) <timeouts>` tuple.
-    :type timeout: float or tuple
-    :param allow_redirects: (optional) Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
-    :type allow_redirects: bool
-    :param proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
-    :param verify: (optional) Either a boolean, in which case it controls whether we verify
-            the server's TLS certificate, or a string, in which case it must be a path
-            to a CA bundle to use. Defaults to ``True``.
-    :param stream: (optional) if ``False``, the response content will be immediately downloaded.
-    :param cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
-
-    Usage::
-
-      >>> import requests
-      >>> req = requests.request('GET', 'https://httpbin.org/get')
-      >>> req
-      <Response [200]>
+    """
+    构造请求对象
+    :param method: 请求方法
+    :param url: 请求地址
+    :param params: 查询参数
+    :param data: form表单参数
+    :param json: json参数
+    :param headers: 请求头
+    :param cookies: cookie
+    :param files: 文件列表
+    :param auth: 权限校验
+    :type timeout: 超时时间
+    :param allow_redirects: 重定向
+    :param proxies: 代理
+    :param verify: 认证
+    :param stream: 流
+    :param cert: SSL文件
     """
 
     # By using the 'with' statement we are sure the session is closed, thus we
@@ -116,15 +95,11 @@ def post(url, data=None, json=None, **kwargs):
 
 
 def put(url, data=None, **kwargs):
-    r"""Sends a PUT request.
-
-    :param url: URL for the new :class:`Request` object.
-    :param data: (optional) Dictionary, list of tuples, bytes, or file-like
-        object to send in the body of the :class:`Request`.
-    :param json: (optional) json data to send in the body of the :class:`Request`.
-    :param \*\*kwargs: Optional arguments that ``request`` takes.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
+    r"""
+    发送PUT请求
+    :param url: 请求的URL地址
+    :param data: 请求的数据
+    :param json: JSON格式的数据
     """
 
     return request('put', url, data=data, **kwargs)

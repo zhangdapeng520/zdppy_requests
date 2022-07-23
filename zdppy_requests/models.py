@@ -442,20 +442,15 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
                 self.headers[to_native_string(name)] = value
 
     def prepare_body(self, data, files, json=None):
-        """Prepares the given HTTP body data."""
-
-        # Check if file, fo, generator, iterator.
-        # If not, run through normal process.
-
-        # Nottin' on you.
+        """
+        准备请求体数据
+        """
         body = None
         content_type = None
 
+        # 将数据转换为JSON格式
         if not data and json is not None:
-            # urllib3 requires a bytes-like body. Python 2's json.dumps
-            # provides this natively, but Python 3 gives a Unicode string.
             content_type = 'application/json'
-
             try:
                 body = complexjson.dumps(json, allow_nan=False)
             except ValueError as ve:
