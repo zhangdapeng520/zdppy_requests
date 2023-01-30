@@ -2,4 +2,5 @@
 .vscode
 *.jpg
 dist
-__pychache__
+__pycache__
+test.py

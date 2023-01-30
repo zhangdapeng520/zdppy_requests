@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-requests.auth
-~~~~~~~~~~~~~
-
-This module contains the authentication handlers for Requests.
-"""
-
 import os
 import re
 import time
