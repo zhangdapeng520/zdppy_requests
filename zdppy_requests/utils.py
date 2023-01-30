@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""
+requests.utils
+~~~~~~~~~~~~~~
+
+This module provides utility functions that are used within Requests
+that are also useful for external consumption.
+"""
+
 import codecs
 import contextlib
 import io
@@ -10,10 +20,8 @@ import tempfile
 import warnings
 import zipfile
 from collections import OrderedDict
-from .libs.urllib3.util import make_headers
-from .libs.urllib3.util import parse_url
-
-from .__version__ import __version__
+from .urllib3.util import make_headers
+from .urllib3.util import parse_url
 from . import certs
 # to_native_string is unused here, but imported here for backwards compatibility
 from ._internal_utils import to_native_string
@@ -75,7 +83,6 @@ if sys.platform == 'win32':
             if re.match(test, host, re.I):
                 return True
         return False
-
 
     def proxy_bypass(host):  # noqa
         """Return True, if the host should be bypassed.
@@ -462,7 +469,8 @@ def get_encodings_from_content(content):
         DeprecationWarning)
 
     charset_re = re.compile(r'<meta.*?charset=["\']*(.+?)["\'>]', flags=re.I)
-    pragma_re = re.compile(r'<meta.*?content=["\']*;?charset=(.+?)["\'>]', flags=re.I)
+    pragma_re = re.compile(
+        r'<meta.*?content=["\']*;?charset=(.+?)["\'>]', flags=re.I)
     xml_re = re.compile(r'^<\?xml.*?encoding=["\']*(.+?)["\'>]')
 
     return (charset_re.findall(content) +
@@ -645,7 +653,8 @@ def address_in_network(ip, net):
     """
     ipaddr = struct.unpack('=L', socket.inet_aton(ip))[0]
     netaddr, bits = net.split('/')
-    netmask = struct.unpack('=L', socket.inet_aton(dotted_netmask(int(bits))))[0]
+    netmask = struct.unpack(
+        '=L', socket.inet_aton(dotted_netmask(int(bits))))[0]
     network = struct.unpack('=L', socket.inet_aton(netaddr))[0] & netmask
     return (ipaddr & netmask) == (network & netmask)
 
@@ -726,7 +735,7 @@ def should_bypass_proxies(url, no_proxy):
     """
     # Prioritize lowercase environment variables over uppercase
     # to keep a consistent behaviour with other http projects (curl, wget).
-    get_proxy = lambda k: os.environ.get(k) or os.environ.get(k.upper())
+    def get_proxy(k): return os.environ.get(k) or os.environ.get(k.upper())
 
     # First check whether no_proxy is defined. If it is, check that the URL
     # we're getting isn't in the no_proxy list.
@@ -844,13 +853,13 @@ def resolve_proxies(request, proxies, trust_env=True):
     return new_proxies
 
 
-def default_user_agent(name="python-requests"):
+def default_user_agent(name="zdppy-requests"):
     """
     Return a string representing the default user agent.
 
     :rtype: str
     """
-    return '%s/%s' % (name, __version__)
+    return '%s/%s' % (name, "0.1.0")
 
 
 def default_headers():
@@ -1005,7 +1014,8 @@ def check_header_validity(header):
         pat = _CLEAN_HEADER_REGEX_STR
     try:
         if not pat.match(value):
-            raise InvalidHeader("Invalid return character or leading space in header: %s" % name)
+            raise InvalidHeader(
+                "Invalid return character or leading space in header: %s" % name)
     except TypeError:
         raise InvalidHeader("Value for header {%s: %s} must be of type str or "
                             "bytes, not %s" % (name, value, type(value)))
@@ -1040,4 +1050,5 @@ def rewind_body(prepared_request):
             raise UnrewindableBodyError("An error occurred when rewinding request "
                                         "body for redirect.")
     else:
-        raise UnrewindableBodyError("Unable to rewind request body for redirect.")
+        raise UnrewindableBodyError(
+            "Unable to rewind request body for redirect.")

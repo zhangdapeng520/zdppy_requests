@@ -1,14 +1,5 @@
-# -*- coding: utf-8 -*-
-
-"""
-requests.exceptions
-~~~~~~~~~~~~~~~~~~~
-
-This module contains the set of Requests' exceptions.
-"""
-from .libs.urllib3.exceptions import HTTPError as BaseHTTPError
-
 from .compat import JSONDecodeError as CompatJSONDecodeError
+from .urllib3.exceptions import HTTPError as BaseHTTPError
 
 
 class RequestException(IOError):
@@ -68,27 +59,19 @@ class ConnectTimeout(ConnectionError, Timeout):
 
 
 class ReadTimeout(Timeout):
-    """
-    服务器在分配的时间内没有发送任何数据。
-    """
+    """The server did not send any data in the allotted amount of time."""
 
 
 class URLRequired(RequestException):
-    """
-    发出请求需要一个有效的URL。
-    """
+    """A valid URL is required to make a request."""
 
 
 class TooManyRedirects(RequestException):
-    """
-    太多的重定向。
-    """
+    """Too many redirects."""
 
 
 class MissingSchema(RequestException, ValueError):
-    """
-    太多的重定向。URL方案(例如http或https)缺失。
-    """
+    """The URL scheme (e.g. http or https) is missing."""
 
 
 class InvalidSchema(RequestException, ValueError):
@@ -96,27 +79,19 @@ class InvalidSchema(RequestException, ValueError):
 
 
 class InvalidURL(RequestException, ValueError):
-    """
-    提供的URL不知何故无效。
-    """
+    """The URL provided was somehow invalid."""
 
 
 class InvalidHeader(RequestException, ValueError):
-    """
-    提供的URL不知何故无效。提供的报头值在某种程度上是无效的。
-    """
+    """The header value provided was somehow invalid."""
 
 
 class InvalidProxyURL(InvalidURL):
-    """
-    提供的代理URL无效。
-    """
+    """The proxy URL provided is invalid."""
 
 
 class ChunkedEncodingError(RequestException):
-    """
-    服务器声明了块编码，但发送了一个无效的块。
-    """
+    """The server declared chunked encoding but sent an invalid chunk."""
 
 
 class ContentDecodingError(RequestException, BaseHTTPError):
@@ -124,36 +99,26 @@ class ContentDecodingError(RequestException, BaseHTTPError):
 
 
 class StreamConsumedError(RequestException, TypeError):
-    """
-    此响应的内容已经被使用。
-    """
+    """The content for this response was already consumed."""
 
 
 class RetryError(RequestException):
-    """
-    自定义重试逻辑失败
-    """
+    """Custom retries logic failed"""
 
 
 class UnrewindableBodyError(RequestException):
-    """
-    自定义重试逻辑失败请求在尝试倒带正文时遇到错误。
-    """
+    """Requests encountered an error when trying to rewind a body."""
+
+# Warnings
 
 
 class RequestsWarning(Warning):
-    """
-    请求的基本警告。
-    """
+    """Base warning for Requests."""
 
 
 class FileModeWarning(RequestsWarning, DeprecationWarning):
-    """
-    请求的基本警告。文件以文本模式打开，但请求确定其二进制长度。
-    """
+    """A file was opened in text mode, but Requests determined its binary length."""
 
 
 class RequestsDependencyWarning(RequestsWarning):
-    """
-    导入的依赖项与预期的版本范围不匹配。
-    """
+    """An imported dependency doesn't match the expected version range."""

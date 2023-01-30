@@ -6,30 +6,15 @@ import platform
 import sys
 import ssl
 
-from .libs import idna
-from .libs import urllib3
+from . import idna
+from . import urllib3
 
 from . import __version__ as requests_version
+import charset_normalizer
 
-try:
-    from .libs import charset_normalizer
-except ImportError:
-    charset_normalizer = None
+chardet = None
 
-try:
-    import chardet
-except ImportError:
-    chardet = None
-
-try:
-    from .libs.urllib3.contrib import pyopenssl
-except ImportError:
-    pyopenssl = None
-    OpenSSL = None
-    cryptography = None
-else:
-    import OpenSSL
-    import cryptography
+from .urllib3.contrib import pyopenssl
 
 
 def _implementation():

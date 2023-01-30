@@ -1,11 +1,14 @@
 # zdppy_requests
+基于requests二开的HTTP请求库，无任何第三方依赖，可独立使用，不受开源框架迭代的影响
 
-python的请求工具库
 
-项目地址：https://github.com/zhangdapeng520/zdppy_requests
+# 使用示例
+## 获取网页源码
+```python
+import zdppy_requests as zr
 
-## 版本历史
-
-- V0.1.0 2022/02/22 新增：基本增删改查
-- V0.1.2 2022/07/23 新增：常用示例
+response = zr.get("https://www.baidu.com/")
+print(response.status_code)
+print(response.text)
+```
 

@@ -1,26 +1,11 @@
-# -*- coding: utf-8 -*-
-
-"""
-requests.models
-~~~~~~~~~~~~~~~
-
-This module contains the primary objects that power Requests.
-"""
-
 import datetime
 import sys
-
-# Import encoding now, to avoid implicit import later.
-# Implicit import within threads may cause LookupError when standard library is in a ZIP,
-# such as in Embedded Python. See https://github.com/psf/requests/issues/3578.
-from typing import Union, List
-
 import encodings.idna
 
-from .libs.urllib3.fields import RequestField
-from .libs.urllib3.filepost import encode_multipart_formdata
-from .libs.urllib3.util import parse_url
-from .libs.urllib3.exceptions import (
+from .urllib3.fields import RequestField
+from .urllib3.filepost import encode_multipart_formdata
+from .urllib3.util import parse_url
+from .urllib3.exceptions import (
     DecodeError, ReadTimeoutError, ProtocolError, LocationParseError)
 
 from io import UnsupportedOperation
@@ -180,12 +165,14 @@ class RequestHooksMixin(object):
         """Properly register a hook."""
 
         if event not in self.hooks:
-            raise ValueError('Unsupported event specified, with event name "%s"' % (event))
+            raise ValueError(
+                'Unsupported event specified, with event name "%s"' % (event))
 
         if isinstance(hook, Callable):
             self.hooks[event].append(hook)
         elif hasattr(hook, '__iter__'):
-            self.hooks[event].extend(h for h in hook if isinstance(h, Callable))
+            self.hooks[event].extend(
+                h for h in hook if isinstance(h, Callable))
 
     def deregister_hook(self, event, hook):
         """Deregister a previously registered hook.
@@ -387,7 +374,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
             raise InvalidURL(*e.args)
 
         if not scheme:
-            error = ("Invalid URL {0!r}: No scheme supplied. Perhaps you meant http://{0}?")
+            error = (
+                "Invalid URL {0!r}: No scheme supplied. Perhaps you meant http://{0}?")
             error = error.format(to_native_string(url, 'utf8'))
 
             raise MissingSchema(error)
@@ -429,7 +417,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
             else:
                 query = enc_params
 
-        url = requote_uri(urlunparse([scheme, netloc, path, None, query, fragment]))
+        url = requote_uri(urlunparse(
+            [scheme, netloc, path, None, query, fragment]))
         self.url = url
 
     def prepare_headers(self, headers):
@@ -444,15 +433,20 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
                 self.headers[to_native_string(name)] = value
 
     def prepare_body(self, data, files, json=None):
-        """
-        准备请求体数据
-        """
+        """Prepares the given HTTP body data."""
+
+        # Check if file, fo, generator, iterator.
+        # If not, run through normal process.
+
+        # Nottin' on you.
         body = None
         content_type = None
 
-        # 将数据转换为JSON格式
         if not data and json is not None:
+            # urllib3 requires a bytes-like body. Python 2's json.dumps
+            # provides this natively, but Python 3 gives a Unicode string.
             content_type = 'application/json'
+
             try:
                 body = complexjson.dumps(json, allow_nan=False)
             except ValueError as ve:
@@ -486,7 +480,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
                     self._body_position = object()
 
             if files:
-                raise NotImplementedError('Streamed bodies and files are mutually exclusive.')
+                raise NotImplementedError(
+                    'Streamed bodies and files are mutually exclusive.')
 
             if length:
                 self.headers['Content-Length'] = builtin_str(length)
@@ -578,10 +573,10 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
 
 
 class Response(object):
+    """The :class:`Response <Response>` object, which contains a
+    server's response to an HTTP request.
     """
-    响应类
-    """
-    # 属性列表
+
     __attrs__ = [
         '_content', 'status_code', 'headers', 'url', 'history',
         'encoding', 'reason', 'cookies', 'elapsed', 'request'
@@ -591,16 +586,48 @@ class Response(object):
         self._content = False
         self._content_consumed = False
         self._next = None
-        self.status_code: int = 0  # 响应状态码
-        self.headers = CaseInsensitiveDict()  # 请求头
-        self.raw: str = ""  # 纯文本内容
-        self.url: str = ""  # 最终的URL
-        self.encoding: str = "UTF-8"  # 编码格式
-        self.history: List[Response] = []  # 请求历史
-        self.reason: str = ""  # 响应描述，比如Ok，Not Found
-        self.cookies = cookiejar_from_dict({})  # cookie字典
-        self.elapsed = datetime.timedelta(0)  # 请求消耗的世界
-        self.request: Union[PreparedRequest, None] = None  # 请求对象
+
+        #: Integer Code of responded HTTP Status, e.g. 404 or 200.
+        self.status_code = None
+
+        #: Case-insensitive Dictionary of Response Headers.
+        #: For example, ``headers['content-encoding']`` will return the
+        #: value of a ``'Content-Encoding'`` response header.
+        self.headers = CaseInsensitiveDict()
+
+        #: File-like object representation of response (for advanced usage).
+        #: Use of ``raw`` requires that ``stream=True`` be set on the request.
+        #: This requirement does not apply for use internally to Requests.
+        self.raw = None
+
+        #: Final URL location of Response.
+        self.url = None
+
+        #: Encoding to decode with when accessing r.text.
+        self.encoding = None
+
+        #: A list of :class:`Response <Response>` objects from
+        #: the history of the Request. Any redirect responses will end
+        #: up here. The list is sorted from the oldest to the most recent request.
+        self.history = []
+
+        #: Textual reason of responded HTTP Status, e.g. "Not Found" or "OK".
+        self.reason = None
+
+        #: A CookieJar of Cookies the server sent back.
+        self.cookies = cookiejar_from_dict({})
+
+        #: The amount of time elapsed between sending the request
+        #: and the arrival of the response (as a timedelta).
+        #: This property specifically measures the time taken between sending
+        #: the first byte of the request and finishing parsing the headers. It
+        #: is therefore unaffected by consuming the response content or the
+        #: value of the ``stream`` keyword argument.
+        self.elapsed = datetime.timedelta(0)
+
+        #: The :class:`PreparedRequest <PreparedRequest>` object to which this
+        #: is a response.
+        self.request = None
 
     def __enter__(self):
         return self
@@ -609,6 +636,8 @@ class Response(object):
         self.close()
 
     def __getstate__(self):
+        # Consume everything; accessing the content attribute makes
+        # sure the content has been fully read.
         if not self._content_consumed:
             self.content
 
@@ -728,7 +757,8 @@ class Response(object):
         if self._content_consumed and isinstance(self._content, bool):
             raise StreamConsumedError()
         elif chunk_size is not None and not isinstance(chunk_size, int):
-            raise TypeError("chunk_size must be an int, it is instead a %s." % type(chunk_size))
+            raise TypeError(
+                "chunk_size must be an int, it is instead a %s." % type(chunk_size))
         # simulate reading small chunks of the content
         reused_chunks = iter_slices(self._content, chunk_size)
 
@@ -785,7 +815,8 @@ class Response(object):
             if self.status_code == 0 or self.raw is None:
                 self._content = None
             else:
-                self._content = b''.join(self.iter_content(CONTENT_CHUNK_SIZE)) or b''
+                self._content = b''.join(
+                    self.iter_content(CONTENT_CHUNK_SIZE)) or b''
 
         self._content_consumed = True
         # don't need to release the connection; that's been handled by urllib3
@@ -861,7 +892,10 @@ class Response(object):
         except JSONDecodeError as e:
             # Catch JSON-related errors and raise as requests.JSONDecodeError
             # This aliases json.JSONDecodeError and simplejson.JSONDecodeError
-            raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+            if is_py2:  # e is a ValueError
+                raise RequestsJSONDecodeError(e.message)
+            else:
+                raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
 
     @property
     def links(self):
@@ -898,10 +932,12 @@ class Response(object):
             reason = self.reason
 
         if 400 <= self.status_code < 500:
-            http_error_msg = u'%s Client Error: %s for url: %s' % (self.status_code, reason, self.url)
+            http_error_msg = u'%s Client Error: %s for url: %s' % (
+                self.status_code, reason, self.url)
 
         elif 500 <= self.status_code < 600:
-            http_error_msg = u'%s Server Error: %s for url: %s' % (self.status_code, reason, self.url)
+            http_error_msg = u'%s Server Error: %s for url: %s' % (
+                self.status_code, reason, self.url)
 
         if http_error_msg:
             raise HTTPError(http_error_msg, response=self)

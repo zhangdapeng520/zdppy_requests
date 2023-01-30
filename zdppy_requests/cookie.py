@@ -1,4 +1,4 @@
-from .cookies import RequestsCookieJar
+from .libs.requests.cookies import RequestsCookieJar
 
 
 class Cookie(RequestsCookieJar):

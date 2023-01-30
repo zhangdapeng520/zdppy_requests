@@ -218,8 +218,8 @@ class SessionRedirectMixin(object):
             # value ensures `rewindable` will be True, allowing us to raise an
             # UnrewindableBodyError, instead of hanging the connection.
             rewindable = (
-                    prepared_request._body_position is not None and
-                    ('Content-Length' in headers or 'Transfer-Encoding' in headers)
+                prepared_request._body_position is not None and
+                ('Content-Length' in headers or 'Transfer-Encoding' in headers)
             )
 
             # Attempt to rewind consumed file-like object.
@@ -454,27 +454,51 @@ class Session(SessionRedirectMixin):
         return p
 
     def request(self, method, url,
-                params=None, data=None, headers=None, cookies=None, files=None,
-                auth=None, timeout=None, allow_redirects=True, proxies=None,
-                hooks=None, stream=None, verify=None, cert=None, json=None):
+            params=None, data=None, headers=None, cookies=None, files=None,
+            auth=None, timeout=None, allow_redirects=True, proxies=None,
+            hooks=None, stream=None, verify=None, cert=None, json=None):
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+
+        :param method: method for the new :class:`Request` object.
+        :param url: URL for the new :class:`Request` object.
+        :param params: (optional) Dictionary or bytes to be sent in the query
+            string for the :class:`Request`.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param json: (optional) json to send in the body of the
+            :class:`Request`.
+        :param headers: (optional) Dictionary of HTTP Headers to send with the
+            :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with the
+            :class:`Request`.
+        :param files: (optional) Dictionary of ``'filename': file-like-objects``
+            for multipart encoding upload.
+        :param auth: (optional) Auth tuple or callable to enable
+            Basic/Digest/Custom HTTP Auth.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple
+        :param allow_redirects: (optional) Set to True by default.
+        :type allow_redirects: bool
+        :param proxies: (optional) Dictionary mapping protocol or protocol and
+            hostname to the URL of the proxy.
+        :param stream: (optional) whether to immediately download the response
+            content. Defaults to ``False``.
+        :param verify: (optional) Either a boolean, in which case it controls whether we verify
+            the server's TLS certificate, or a string, in which case it must be a path
+            to a CA bundle to use. Defaults to ``True``. When set to
+            ``False``, requests will accept any TLS certificate presented by
+            the server, and will ignore hostname mismatches and/or expired
+            certificates, which will make your application vulnerable to
+            man-in-the-middle (MitM) attacks. Setting verify to ``False`` 
+            may be useful during local development or testing.
+        :param cert: (optional) if String, path to ssl client cert file (.pem).
+            If Tuple, ('cert', 'key') pair.
+        :rtype: requests.Response
         """
-        构造请求对象
-        :param method: 请求方法
-        :param url: 请求地址
-        :param params: 查询参数
-        :param data: form表单参数
-        :param json: json参数
-        :param headers: 请求头
-        :param cookies: cookie
-        :param files: 文件列表
-        :param auth: 权限校验
-        :type timeout: 超时时间
-        :param allow_redirects: 重定向
-        :param proxies: 代理
-        :param verify: 认证
-        :param stream: 流
-        :param cert: SSL文件
-        """
+        # Create the Request.
         req = Request(
             method=method.upper(),
             url=url,
@@ -501,8 +525,6 @@ class Session(SessionRedirectMixin):
             'allow_redirects': allow_redirects,
         }
         send_kwargs.update(settings)
-
-        # 发送请求并获取响应
         resp = self.send(prep, **send_kwargs)
 
         return resp

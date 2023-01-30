@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+requests.structures
+~~~~~~~~~~~~~~~~~~~
+
+Data structures that power Requests.
+"""
+
 from collections import OrderedDict
 
 from .compat import Mapping, MutableMapping

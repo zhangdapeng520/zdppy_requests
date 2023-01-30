@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-requests._internal_utils
-~~~~~~~~~~~~~~
-
-Provides utility functions that are consumed internally by Requests
-which depend on extremely few external helpers (such as compat)
-"""
-
 from .compat import builtin_str, str
 
 
